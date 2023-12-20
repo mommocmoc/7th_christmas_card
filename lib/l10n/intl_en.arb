@@ -1,0 +1,11 @@
+{   "@@locale": "en",
+    "merrychristmas": "Merry Christmas",
+    "@merrychristmas": {
+      "description": "The greeting in the Christmas card"  
+    },
+    "happynewyear": "Happy new year",
+    "@happynewyear": {
+      "description": "The greeting in the New Year!" 
+    },
+    "info": "This app may appear in different languages depending on your region."
+  }

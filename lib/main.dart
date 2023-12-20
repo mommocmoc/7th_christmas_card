@@ -1,19 +1,51 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:future_lab_7th_christmas_card/generated/l10n.dart';
+import 'package:intl/intl.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+  SemanticsBinding.instance.ensureSemantics();
+}
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var locale = const Locale('en');
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Merry Christmas! from Future Lab',
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+        Locale('kr'),
+      ],
+      locale: locale,
+      title: 'Christmas Card from Future Lab',
       theme: ThemeData(
-          textTheme: TextTheme(
-        bodyLarge: TextStyle(color: Colors.white),
-      )),
-      home: Tree(),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+      home: const Tree(),
     );
   }
 }
@@ -21,6 +53,8 @@ class MyApp extends StatelessWidget {
 class Tree extends StatefulWidget {
   static final List<double> _offsets =
       _generateOffsets(100, 0.05).toList(growable: false);
+
+  const Tree({super.key});
 
   @override
   State<Tree> createState() => _TreeState();
@@ -48,41 +82,77 @@ class Tree extends StatefulWidget {
 class _TreeState extends State<Tree> {
   bool _showDragon = false;
   String _message = "Merry Christmas!";
-
+  var localeVar = const Locale('en');
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black,
-      child: Align(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 700),
-          child: ListView(
-            children: <Widget>[
-              TextButton(
-                  onPressed: onPressed,
-                  child: Text(
-                    _message,
-                    style: TextStyle(
-                      color: Colors.blue[200],
-                      backgroundColor: Colors.amber[100],
-                      fontSize: 30,
-                    ),
-                  )),
-              _showDragon
-                  ? Center(
-                      child: Image.asset('images/dragon.png'),
-                    )
-                  : Column(
+    return Localizations.override(
+      context: context,
+      locale: localeVar,
+      child: Scaffold(
+        appBar: AppBar(
+          title: FittedBox(
+            child: _showDragon
+                ? Text(
+                    '${Intl.message('happynewyear')} Card',
+                    style: const TextStyle(color: Colors.deepOrangeAccent),
+                  )
+                : Text(
+                    '${Intl.message('merrychristmas')} Card',
+                    style: const TextStyle(color: Colors.deepOrangeAccent),
+                  ),
+          ),
+          backgroundColor: Colors.black87,
+        ),
+        backgroundColor: Colors.black,
+        body: Align(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
+              children: <Widget>[
+                Localizations.override(
+                  context: context,
+                  locale: const Locale('kr'),
+                  child: TextButton(
+                    onPressed: onPressed,
+                    child: Column(
                       children: [
-                        Center(child: Icon(Icons.star, color: Colors.white)),
-                        SizedBox(height: 7),
-                        for (final x in Tree._offsets) Light(x),
-                        SizedBox(height: 40),
-                        Center(child: Text('(Happy Holidays from Future Lab!)'))
+                        Text(
+                          Intl.message('info'),
+                          style: const TextStyle(
+                            backgroundColor: Colors.amberAccent,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          _showDragon
+                              ? '${Intl.message('happynewyear')}!'
+                              : '${Intl.message('merrychristmas')}!',
+                          style: TextStyle(
+                            color: Colors.blue[200],
+                            backgroundColor: Colors.amber[100],
+                            fontSize: 30,
+                          ),
+                        ),
                       ],
                     ),
-            ],
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
+                  ),
+                ),
+                _showDragon
+                    ? Center(
+                        child: Image.asset('images/dragon.png'),
+                      )
+                    : Column(
+                        children: [
+                          const Center(
+                              child: Icon(Icons.star, color: Colors.white)),
+                          const SizedBox(height: 7),
+                          for (final x in Tree._offsets) Light(x),
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+              ],
+            ),
           ),
         ),
       ),

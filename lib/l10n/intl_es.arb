@@ -1,0 +1,11 @@
+{   "@@locale": "es",
+    "merrychristmas": "¡Feliz navidad!",
+    "@merrychristmas": {
+      "description": "Feliz Navidad"
+    },
+    "happynewyear": "¡Feliz año nuevo!",
+    "@happynewyear": {
+      "description": "Feliz año nuevo" 
+    },
+    "info": "Esta aplicación puede aparecer en diferentes idiomas según su región."
+  }
