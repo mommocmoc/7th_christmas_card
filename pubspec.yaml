@@ -1,0 +1,22 @@
+name: future_lab_7th_christmas_card
+description: "2023년에도 돌아온 퓨처랩 크리스마스 카드 경진대회"
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+assets:
+  - assets/images/dragon.png
