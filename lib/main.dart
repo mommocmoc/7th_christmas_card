@@ -126,8 +126,8 @@ class _TreeState extends State<Tree> {
                         ),
                         Text(
                           _showDragon
-                              ? '${Intl.message('happynewyear')}!'
-                              : '${Intl.message('merrychristmas')}!',
+                              ? '${Intl.message('happynewyear')}!🎄'
+                              : '${Intl.message('merrychristmas')}!🐉',
                           style: TextStyle(
                             color: Colors.blue[200],
                             backgroundColor: Colors.amber[100],
