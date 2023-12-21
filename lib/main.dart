@@ -13,51 +13,12 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  var locale = const Locale('en');
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('es'),
-        Locale('kr'),
-      ],
-      locale: locale,
-      title: 'Christmas Card from Future Lab',
-      theme: ThemeData(
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-      home: const Tree(),
-    );
-  }
-}
-
-class Tree extends StatefulWidget {
   static final List<double> _offsets =
       _generateOffsets(100, 0.05).toList(growable: false);
 
-  const Tree({super.key});
-
+  const MyApp({super.key});
   @override
-  State<Tree> createState() => _TreeState();
+  State<MyApp> createState() => _MyAppState();
 
   static Iterable<double> _generateOffsets(
       int count, double acceleration) sync* {
@@ -79,16 +40,48 @@ class Tree extends StatefulWidget {
   }
 }
 
-class _TreeState extends State<Tree> {
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale("ko");
+  Locale _selectedLocale = const Locale("ko");
   bool _showDragon = false;
   String _message = "Merry Christmas!";
-  var localeVar = const Locale('en');
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _locale = const Locale("ko");
+    _selectedLocale = const Locale("ko");
+    _showDragon = false;
+    _message = "Merry Christmas!";
+    // onPressed();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Localizations.override(
-      context: context,
-      locale: localeVar,
-      child: Scaffold(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        // AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+        Locale('ko'),
+      ],
+      locale: _locale,
+      title: 'Christmas Card from Future Lab',
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+      home: Scaffold(
         appBar: AppBar(
           title: FittedBox(
             child: _showDragon
@@ -101,6 +94,27 @@ class _TreeState extends State<Tree> {
                     style: const TextStyle(color: Colors.deepOrangeAccent),
                   ),
           ),
+          actions: [
+            PopupMenuButton<Locale>(
+              initialValue: _selectedLocale,
+              itemBuilder: (context) => const AppLocalizationDelegate()
+                  .supportedLocales
+                  .map(
+                    (locale) => PopupMenuItem(
+                      value: locale,
+                      child: Text(locale.languageCode),
+                    ),
+                  )
+                  .toList(),
+              onSelected: (locale) => {
+                setState(() {
+                  _locale = locale;
+                  _selectedLocale = locale;
+                })
+              },
+            )
+          ],
+          foregroundColor: Colors.amber,
           backgroundColor: Colors.black87,
         ),
         backgroundColor: Colors.black,
@@ -110,32 +124,36 @@ class _TreeState extends State<Tree> {
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
               children: <Widget>[
-                Localizations.override(
-                  context: context,
-                  locale: const Locale('kr'),
-                  child: TextButton(
-                    onPressed: onPressed,
-                    child: Column(
-                      children: [
-                        Text(
-                          Intl.message('info'),
-                          style: const TextStyle(
-                            backgroundColor: Colors.amberAccent,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          _showDragon
-                              ? '${Intl.message('happynewyear')}!🎄'
-                              : '${Intl.message('merrychristmas')}!🐉',
-                          style: TextStyle(
-                            color: Colors.blue[200],
-                            backgroundColor: Colors.amber[100],
-                            fontSize: 30,
-                          ),
-                        ),
-                      ],
+                Center(
+                  child: Text(
+                    _locale.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
                     ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: onPressed,
+                  child: Column(
+                    children: [
+                      Text(
+                        Intl.message('info'),
+                        style: const TextStyle(
+                          backgroundColor: Colors.amberAccent,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        _showDragon
+                            ? '${Intl.message('happynewyear')}!🐉'
+                            : '${Intl.message('merrychristmas')}!🎄',
+                        style: TextStyle(
+                          color: Colors.blue[200],
+                          backgroundColor: Colors.amber[100],
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 _showDragon
@@ -147,7 +165,7 @@ class _TreeState extends State<Tree> {
                           const Center(
                               child: Icon(Icons.star, color: Colors.white)),
                           const SizedBox(height: 7),
-                          for (final x in Tree._offsets) Light(x),
+                          for (final x in MyApp._offsets) Light(x),
                           const SizedBox(height: 40),
                         ],
                       ),
@@ -159,13 +177,21 @@ class _TreeState extends State<Tree> {
     );
   }
 
+  void onSelected() {
+    setState(() {
+      _locale = _locale;
+    });
+  }
+
   void onPressed() {
     _message == "Merry Christmas!"
         ? setState(() {
+            _locale = _selectedLocale;
             _message = "And Happy New Year!";
             _showDragon = true;
           })
         : setState(() {
+            _locale = _selectedLocale;
             _message = "Merry Christmas!";
             _showDragon = false;
           });
