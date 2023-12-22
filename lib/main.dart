@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,19 +40,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale("ko");
-  Locale _selectedLocale = const Locale("ko");
+  final Locale _locale = const Locale("en");
   bool _showDragon = false;
   String _message = "Merry Christmas!";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _locale = const Locale("ko");
-    _selectedLocale = const Locale("ko");
-    _showDragon = false;
-    _message = "Merry Christmas!";
-    // onPressed();
+    //This line is important! To load the init localization data.
+    S.load(_locale);
   }
 
   @override
@@ -96,7 +91,9 @@ class _MyAppState extends State<MyApp> {
           ),
           actions: [
             PopupMenuButton<Locale>(
-              initialValue: _selectedLocale,
+              tooltip: Intl.message('tooltip'),
+              icon: const Icon(Icons.language),
+              initialValue: _locale,
               itemBuilder: (context) => const AppLocalizationDelegate()
                   .supportedLocales
                   .map(
@@ -108,8 +105,7 @@ class _MyAppState extends State<MyApp> {
                   .toList(),
               onSelected: (locale) => {
                 setState(() {
-                  _locale = locale;
-                  _selectedLocale = locale;
+                  S.load(locale);
                 })
               },
             )
@@ -124,22 +120,16 @@ class _MyAppState extends State<MyApp> {
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
               children: <Widget>[
-                Center(
-                  child: Text(
-                    _locale.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
                 TextButton(
+                  style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.amber)),
                   onPressed: onPressed,
                   child: Column(
                     children: [
                       Text(
                         Intl.message('info'),
                         style: const TextStyle(
-                          backgroundColor: Colors.amberAccent,
+                          // backgroundColor: Colors.amberAccent,
                           color: Colors.white,
                         ),
                       ),
@@ -149,7 +139,7 @@ class _MyAppState extends State<MyApp> {
                             : '${Intl.message('merrychristmas')}!🎄',
                         style: TextStyle(
                           color: Colors.blue[200],
-                          backgroundColor: Colors.amber[100],
+                          // backgroundColor: Colors.amber[100],
                           fontSize: 30,
                         ),
                       ),
@@ -158,7 +148,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 _showDragon
                     ? Center(
-                        child: Image.asset('images/dragon.png'),
+                        child: Image.asset('dragon.png'),
                       )
                     : Column(
                         children: [
@@ -177,21 +167,13 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void onSelected() {
-    setState(() {
-      _locale = _locale;
-    });
-  }
-
   void onPressed() {
     _message == "Merry Christmas!"
         ? setState(() {
-            _locale = _selectedLocale;
             _message = "And Happy New Year!";
             _showDragon = true;
           })
         : setState(() {
-            _locale = _selectedLocale;
             _message = "Merry Christmas!";
             _showDragon = false;
           });

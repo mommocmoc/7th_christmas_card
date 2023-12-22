@@ -24,6 +24,6 @@ flutter:
   generate: true
 
 assets:
-  - assets/images/dragon.png
+  - assets/dragon.png
 flutter_intl:
   enabled: true

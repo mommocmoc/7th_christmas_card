@@ -23,8 +23,9 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "happynewyear": MessageLookupByLibrary.simpleMessage("새해 복 많이 받으세요"),
-        "info":
-            MessageLookupByLibrary.simpleMessage("이 앱은 지역에 따라 언어가 다르게 보입니다."),
-        "merrychristmas": MessageLookupByLibrary.simpleMessage("메리 크리스마스")
+        "info": MessageLookupByLibrary.simpleMessage(
+            "이 앱은 지역에 따라 언어가 다르게 보입니다. 저를 눌러보세요."),
+        "merrychristmas": MessageLookupByLibrary.simpleMessage("메리 크리스마스"),
+        "tooltip": MessageLookupByLibrary.simpleMessage("언어를 바꾸려면 여기를 누르세요")
       };
 }

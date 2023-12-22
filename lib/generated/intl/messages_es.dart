@@ -25,8 +25,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "happynewyear":
             MessageLookupByLibrary.simpleMessage("¡Feliz año nuevo!"),
         "info": MessageLookupByLibrary.simpleMessage(
-            "Esta aplicación puede aparecer en diferentes idiomas según su región."),
+            "Esta aplicación puede aparecer en diferentes idiomas según su región. Presionarme."),
         "merrychristmas":
-            MessageLookupByLibrary.simpleMessage("¡Feliz navidad!")
+            MessageLookupByLibrary.simpleMessage("¡Feliz navidad!"),
+        "tooltip": MessageLookupByLibrary.simpleMessage(
+            "Presioname para cambiar el idioma")
       };
 }

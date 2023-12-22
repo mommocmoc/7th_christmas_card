@@ -70,11 +70,21 @@ class S {
     );
   }
 
-  /// `This app may appear in different languages depending on your region.`
+  /// `This app may appear in different languages depending on your region. Press me.`
   String get info {
     return Intl.message(
-      'This app may appear in different languages depending on your region.',
+      'This app may appear in different languages depending on your region. Press me.',
       name: 'info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press me to change the language`
+  String get tooltip {
+    return Intl.message(
+      'Press me to change the language',
+      name: 'tooltip',
       desc: '',
       args: [],
     );

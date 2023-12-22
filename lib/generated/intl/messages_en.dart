@@ -24,8 +24,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "happynewyear": MessageLookupByLibrary.simpleMessage("Happy new year"),
         "info": MessageLookupByLibrary.simpleMessage(
-            "This app may appear in different languages depending on your region."),
+            "This app may appear in different languages depending on your region. Press me."),
         "merrychristmas":
-            MessageLookupByLibrary.simpleMessage("Merry Christmas")
+            MessageLookupByLibrary.simpleMessage("Merry Christmas"),
+        "tooltip": MessageLookupByLibrary.simpleMessage(
+            "Press me to change the language")
       };
 }

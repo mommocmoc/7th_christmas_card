@@ -7,5 +7,6 @@
     "@happynewyear": {
       "description": "The greeting in the New Year!" 
     },
-    "info": "This app may appear in different languages depending on your region."
+    "info": "This app may appear in different languages depending on your region. Press me.",
+    "tooltip": "Press me to change the language"
   }
