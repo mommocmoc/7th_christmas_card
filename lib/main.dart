@@ -11,13 +11,39 @@ void main() {
   SemanticsBinding.instance.ensureSemantics();
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   static final List<double> _offsets =
       _generateOffsets(100, 0.05).toList(growable: false);
 
   const MyApp({super.key});
   @override
-  State<MyApp> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        // AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+        Locale('ko'),
+      ],
+      // locale: _locale,
+      title: 'Christmas Card from Future Lab',
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+      home: const Card(),
+    );
+  }
 
   static Iterable<double> _generateOffsets(
       int count, double acceleration) sync* {
@@ -39,128 +65,139 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<MyApp> {
-  final Locale _locale = const Locale("en");
+class Card extends StatefulWidget {
+  const Card({super.key});
+
+  @override
+  State<Card> createState() => _CardState();
+}
+
+class _CardState extends State<Card> with WidgetsBindingObserver {
+  Locale _locale = const Locale('ko');
   bool _showDragon = false;
   String _message = "Merry Christmas!";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setLocale(context));
+    // setLocale(context);
     //This line is important! To load the init localization data.
     S.load(_locale);
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    super.didChangeLocales(locales);
+
+    setState(() {
+      _locale = locales?.first ?? _locale;
+    });
+  }
+
+  setLocale(BuildContext context) {
+    final Locale locale = Localizations.localeOf(context);
+
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        S.delegate,
-        // AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('es'),
-        Locale('ko'),
-      ],
-      locale: _locale,
-      title: 'Christmas Card from Future Lab',
-      theme: ThemeData(
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: FittedBox(
-            child: _showDragon
-                ? Text(
-                    '${Intl.message('happynewyear')} Card',
-                    style: const TextStyle(color: Colors.deepOrangeAccent),
-                  )
-                : Text(
-                    '${Intl.message('merrychristmas')} Card',
-                    style: const TextStyle(color: Colors.deepOrangeAccent),
-                  ),
-          ),
-          actions: [
-            PopupMenuButton<Locale>(
-              tooltip: Intl.message('tooltip'),
-              icon: const Icon(Icons.language),
-              initialValue: _locale,
-              itemBuilder: (context) => const AppLocalizationDelegate()
-                  .supportedLocales
-                  .map(
-                    (locale) => PopupMenuItem(
-                      value: locale,
-                      child: Text(locale.languageCode),
-                    ),
-                  )
-                  .toList(),
-              onSelected: (locale) => {
-                setState(() {
-                  S.load(locale);
-                })
-              },
-            )
-          ],
-          foregroundColor: Colors.amber,
-          backgroundColor: Colors.black87,
-        ),
-        backgroundColor: Colors.black,
-        body: Align(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 700),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
-              children: <Widget>[
-                TextButton(
-                  style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.amber)),
-                  onPressed: onPressed,
-                  child: Column(
-                    children: [
-                      Text(
-                        Intl.message('info'),
-                        style: const TextStyle(
-                          // backgroundColor: Colors.amberAccent,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        _showDragon
-                            ? '${Intl.message('happynewyear')}!🐉'
-                            : '${Intl.message('merrychristmas')}!🎄',
-                        style: TextStyle(
-                          color: Colors.blue[200],
-                          // backgroundColor: Colors.amber[100],
-                          fontSize: 30,
-                        ),
-                      ),
-                    ],
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: FittedBox(
+          child: _showDragon
+              ? Text(
+                  '${Intl.message('happynewyear')} Card',
+                  style: const TextStyle(color: Colors.deepOrangeAccent),
+                )
+              : Text(
+                  '${Intl.message('merrychristmas')} Card',
+                  style: const TextStyle(color: Colors.deepOrangeAccent),
                 ),
-                _showDragon
-                    ? Center(
-                        child: Image.asset('dragon.png'),
-                      )
-                    : Column(
-                        children: [
-                          const Center(
-                              child: Icon(Icons.star, color: Colors.white)),
-                          const SizedBox(height: 7),
-                          for (final x in MyApp._offsets) Light(x),
-                          const SizedBox(height: 40),
-                        ],
+        ),
+        actions: [
+          PopupMenuButton<Locale>(
+            tooltip: Intl.message('tooltip'),
+            icon: const Icon(Icons.language),
+            initialValue: _locale,
+            itemBuilder: (context) => const AppLocalizationDelegate()
+                .supportedLocales
+                .map(
+                  (locale) => PopupMenuItem(
+                    value: locale,
+                    child: Text(locale.languageCode),
+                  ),
+                )
+                .toList(),
+            onSelected: (locale) => {
+              setState(() {
+                S.load(locale);
+              })
+            },
+          )
+        ],
+        foregroundColor: Colors.amber,
+        backgroundColor: Colors.black87,
+      ),
+      backgroundColor: Colors.black,
+      body: Align(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 7),
+            children: <Widget>[
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.amber)),
+                onPressed: onPressed,
+                child: Column(
+                  children: [
+                    Text(
+                      Intl.message('info'),
+                      style: const TextStyle(
+                        // backgroundColor: Colors.amberAccent,
+                        color: Colors.white,
                       ),
-              ],
-            ),
+                    ),
+                    Text(
+                      _showDragon
+                          ? '${Intl.message('happynewyear')}!🐉'
+                          : '${Intl.message('merrychristmas')}!🎄',
+                      style: TextStyle(
+                        color: Colors.blue[200],
+                        // backgroundColor: Colors.amber[100],
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _showDragon
+                  ? Center(
+                      child: Image.asset('dragon.png'),
+                    )
+                  : Column(
+                      children: [
+                        const Center(
+                            child: Icon(Icons.star, color: Colors.white)),
+                        const SizedBox(height: 7),
+                        for (final x in MyApp._offsets) Light(x),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+            ],
           ),
         ),
       ),
