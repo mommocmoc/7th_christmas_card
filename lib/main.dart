@@ -73,9 +73,10 @@ class Card extends StatefulWidget {
 }
 
 class _CardState extends State<Card> with WidgetsBindingObserver {
-  Locale _locale = const Locale('ko');
+  Locale _locale = S.delegate.supportedLocales.first;
   bool _showDragon = false;
   String _message = "Merry Christmas!";
+  var selectedLocale;
 
   @override
   void initState() {
@@ -83,10 +84,11 @@ class _CardState extends State<Card> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setLocale(context));
-    // setLocale(context);
-    //This line is important! To load the init localization data.
-    S.load(_locale);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setLocale(context);
+      selectedLocale = _locale;
+      S.load(_locale);
+    });
   }
 
   @override
@@ -131,7 +133,7 @@ class _CardState extends State<Card> with WidgetsBindingObserver {
           PopupMenuButton<Locale>(
             tooltip: Intl.message('tooltip'),
             icon: const Icon(Icons.language),
-            initialValue: _locale,
+            initialValue: selectedLocale,
             itemBuilder: (context) => const AppLocalizationDelegate()
                 .supportedLocales
                 .map(
@@ -143,6 +145,7 @@ class _CardState extends State<Card> with WidgetsBindingObserver {
                 .toList(),
             onSelected: (locale) => {
               setState(() {
+                selectedLocale = locale;
                 S.load(locale);
               })
             },
